@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, RotateCcw, CheckCircle, Shuffle } from 'lucide-react';
 import { Player, GameResult, GameType } from '@/types/game';

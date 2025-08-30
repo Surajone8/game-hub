@@ -273,7 +273,7 @@ export default function BreakoutPage() {
     }));
   };
 
-  const endGame = () => {
+  const endGame = useCallback(() => {
     const endTime = new Date();
     const duration = gameState.startTime 
       ? Math.round((endTime.getTime() - gameState.startTime.getTime()) / 1000)
@@ -290,7 +290,7 @@ export default function BreakoutPage() {
     };
 
     GameStorage.addGameResult(gameResult);
-  };
+  }, [gameState.startTime, gameState.score, player]);
 
   const resetGame = () => {
     initializeGame();

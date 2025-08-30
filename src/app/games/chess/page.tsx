@@ -127,10 +127,10 @@ export default function ChessPage() {
     return true;
   }, []);
 
-  const isValidKnightMove = useCallback((piece: ChessPiece, from: Position, to: Position, _board: (ChessPiece | null)[][]): boolean => {
-    const rowDiff = Math.abs(to.row - from.row);
-    const colDiff = Math.abs(to.col - from.col);
-    return (rowDiff === 2 && colDiff === 1) || (rowDiff === 1 && colDiff === 2);
+  const isValidKnightMove = useCallback((piece: ChessPiece, from: Position, to: Position): boolean => {
+    const deltaRow = Math.abs(to.row - from.row);
+    const deltaCol = Math.abs(to.col - from.col);
+    return (deltaRow === 2 && deltaCol === 1) || (deltaRow === 1 && deltaCol === 2);
   }, []);
 
   const isValidBishopMove = useCallback((piece: ChessPiece, from: Position, to: Position, board: (ChessPiece | null)[][]): boolean => {
@@ -155,8 +155,10 @@ export default function ChessPage() {
     return isValidRookMove(piece, from, to, board) || isValidBishopMove(piece, from, to, board);
   }, [isValidRookMove, isValidBishopMove]);
 
-  const isValidKingMove = useCallback((piece: ChessPiece, from: Position, to: Position, _board: (ChessPiece | null)[][]): boolean => {
-    return Math.abs(to.row - from.row) <= 1 && Math.abs(to.col - from.col) <= 1;
+  const isValidKingMove = useCallback((piece: ChessPiece, from: Position, to: Position): boolean => {
+    const deltaRow = Math.abs(to.row - from.row);
+    const deltaCol = Math.abs(to.col - from.col);
+    return deltaRow <= 1 && deltaCol <= 1;
   }, []);
 
   const isValidMove = useCallback((piece: ChessPiece, from: Position, to: Position, board: (ChessPiece | null)[][]): boolean => {
@@ -169,13 +171,13 @@ export default function ChessPage() {
       case 'rook':
         return isValidRookMove(piece, from, to, board);
       case 'knight':
-        return isValidKnightMove(piece, from, to, board);
+        return isValidKnightMove(piece, from, to);
       case 'bishop':
         return isValidBishopMove(piece, from, to, board);
       case 'queen':
         return isValidQueenMove(piece, from, to, board);
       case 'king':
-        return isValidKingMove(piece, from, to, board);
+        return isValidKingMove(piece, from, to);
       default:
         return false;
     }

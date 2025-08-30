@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, RotateCcw, Trophy } from 'lucide-react';
 import { Player, GameResult, GameType } from '@/types/game';
@@ -80,10 +80,38 @@ export default function MemoryPage() {
     // Check for match if two cards are flipped
     if (newFlippedCards.length === 2) {
       setTimeout(() => {
-        checkForMatch(newFlippedCards);
+        checkForMatchRef.current?.(newFlippedCards);
       }, 1000);
     }
-  }, [gameState.isPlaying, gameState.isCompleted, gameState.cards, gameState.flippedCards, checkForMatch]);
+  }, [gameState.isPlaying, gameState.isCompleted, gameState.cards, gameState.flippedCards]);
+
+  const checkForMatchRef = useRef<((flippedCardIds: number[]) => void) | null>(null);
+
+  const endGame = useCallback(() => {
+    const endTime = new Date();
+    const duration = gameState.startTime 
+      ? Math.round((endTime.getTime() - gameState.startTime.getTime()) / 1000)
+      : 0;
+
+    const winner = gameState.players.reduce((max, player) => 
+      player.score > max.score ? player : max
+    );
+
+    // Save game result
+    const gameResult: GameResult = {
+      id: Date.now().toString(),
+      gameType: 'memory' as GameType,
+      players: gameState.players.map(player => ({
+        ...player,
+        isWinner: player.id === winner.id
+      })),
+      winner: winner.score > 0 ? winner : null,
+      timestamp: endTime,
+      duration
+    };
+
+    GameStorage.addGameResult(gameResult);
+  }, [gameState.startTime, gameState.players]);
 
   const checkForMatch = useCallback((flippedCardIds: number[]) => {
     const [card1, card2] = flippedCardIds.map(id => gameState.cards.find(c => c.id === id)!);
@@ -127,6 +155,9 @@ export default function MemoryPage() {
     }
   }, [gameState.cards, gameState.currentPlayer, gameState.players, endGame]);
 
+  // Store the function reference in the ref
+  checkForMatchRef.current = checkForMatch;
+
   const startGame = (playerNames: string[]) => {
     if (playerNames.length === 0 || playerNames.some(name => !name.trim())) return;
 
@@ -142,32 +173,6 @@ export default function MemoryPage() {
       isCompleted: false,
       startTime: new Date()
     });
-  };
-
-  const endGame = () => {
-    const endTime = new Date();
-    const duration = gameState.startTime 
-      ? Math.round((endTime.getTime() - gameState.startTime.getTime()) / 1000)
-      : 0;
-
-    const winner = gameState.players.reduce((max, player) => 
-      player.score > max.score ? player : max
-    );
-
-    // Save game result
-    const gameResult: GameResult = {
-      id: Date.now().toString(),
-      gameType: 'memory' as GameType,
-      players: gameState.players.map(player => ({
-        ...player,
-        isWinner: player.id === winner.id
-      })),
-      winner: winner.score > 0 ? winner : null,
-      timestamp: endTime,
-      duration
-    };
-
-    GameStorage.addGameResult(gameResult);
   };
 
   const resetGame = () => {

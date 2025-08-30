@@ -212,7 +212,7 @@ export default function MinesweeperPage() {
         flaggedCount: prev.flaggedCount + (cell.isFlagged ? 1 : -1)
       };
     });
-  }, [gameState.isPlaying, gameState.isGameOver, gameState.board, gameState.flaggedCount]);
+  }, [gameState.isPlaying, gameState.isGameOver, gameState.board]);
 
   const startGame = useCallback((difficulty: 'easy' | 'medium' | 'hard') => {
     if (player.name.trim()) {

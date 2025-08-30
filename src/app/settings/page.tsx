@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Palette, Moon, Sun, Monitor, Settings, Trash2 } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import { GameStorage } from '@/utils/storage';
-import { cn } from '@/utils/cn';
 
 export default function SettingsPage() {
   const router = useRouter();

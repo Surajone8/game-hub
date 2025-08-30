@@ -47,42 +47,6 @@ export default function WordlePage() {
     return WORDS[Math.floor(Math.random() * WORDS.length)];
   }, []);
 
-  const startGame = useCallback(() => {
-    if (player.name.trim()) {
-      const targetWord = getRandomWord();
-      setGameState(prev => ({
-        ...prev,
-        targetWord,
-        guesses: [],
-        currentGuess: '',
-        isPlaying: true,
-        isGameOver: false,
-        isWon: false,
-        startTime: new Date()
-      }));
-    }
-  }, [player.name, getRandomWord]);
-
-  const handleKeyPress = useCallback((key: string) => {
-    if (!gameState.isPlaying || gameState.isGameOver) return;
-
-    if (key === 'ENTER') {
-      submitGuess();
-    } else if (key === 'BACKSPACE') {
-      setGameState(prev => ({
-        ...prev,
-        currentGuess: prev.currentGuess.slice(0, -1)
-      }));
-    } else if (key.length === 1 && /^[A-Z]$/.test(key)) {
-      if (gameState.currentGuess.length < WORD_LENGTH) {
-        setGameState(prev => ({
-          ...prev,
-          currentGuess: prev.currentGuess + key
-        }));
-      }
-    }
-  }, [gameState.isPlaying, gameState.isGameOver, gameState.currentGuess]);
-
   const submitGuess = useCallback(() => {
     if (gameState.currentGuess.length !== WORD_LENGTH) return;
 
@@ -99,6 +63,42 @@ export default function WordlePage() {
       isPlaying: !isGameOver
     }));
   }, [gameState.currentGuess, gameState.guesses, gameState.targetWord]);
+
+  const handleKeyPress = useCallback((key: string) => {
+    if (!gameState.isPlaying || gameState.isGameOver) return;
+    
+    if (key === 'ENTER') {
+      submitGuess();
+    } else if (key === 'BACKSPACE') {
+      setGameState(prev => ({
+        ...prev,
+        currentGuess: prev.currentGuess.slice(0, -1)
+      }));
+    } else if (key.length === 1 && /^[A-Z]$/.test(key)) {
+      if (gameState.currentGuess.length < WORD_LENGTH) {
+        setGameState(prev => ({
+          ...prev,
+          currentGuess: prev.currentGuess + key
+        }));
+      }
+    }
+  }, [gameState.isPlaying, gameState.isGameOver, gameState.currentGuess, submitGuess]);
+
+  const startGame = useCallback(() => {
+    if (player.name.trim()) {
+      const targetWord = getRandomWord();
+      setGameState(prev => ({
+        ...prev,
+        targetWord,
+        guesses: [],
+        currentGuess: '',
+        isPlaying: true,
+        isGameOver: false,
+        isWon: false,
+        startTime: new Date()
+      }));
+    }
+  }, [player.name, getRandomWord]);
 
   const endGame = useCallback(() => {
     const endTime = new Date();

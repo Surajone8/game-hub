@@ -8,7 +8,7 @@ import { cn } from '@/utils/cn';
 
 export default function Header() {
   const pathname = usePathname();
-  const { theme, setTheme, isDark } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   const navigation = [
     { name: 'Home', href: '/', icon: Home },

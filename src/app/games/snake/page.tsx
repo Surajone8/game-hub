@@ -8,7 +8,6 @@ import { GameStorage } from '@/utils/storage';
 import { cn } from '@/utils/cn';
 
 type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
-type CellType = 'snake' | 'food' | 'empty';
 
 interface Position {
   x: number;

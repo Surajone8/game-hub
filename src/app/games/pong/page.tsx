@@ -337,7 +337,7 @@ export default function PongPage() {
     if (gameState.winner) {
       endGame();
     }
-  }, [gameState.winner]);
+  }, [gameState.winner, endGame]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
